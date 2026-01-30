@@ -70,10 +70,38 @@ int main() {
 // สิ่งที่เปลี่ยน: ต้องส่ง int& numCount มาด้วย เพื่อนับว่าตอนนี้มีกี่ตัวแล้ว
 void SeparateWords(string input, double* numbers, int& numCount, char* ops, int& opCount) {
     string tempNum = ""; //พักตัวเลข
+    int i = 0;
+    for (i = 0; i < input.length(); i++) {
+        char word = input[i];
 
+        // กรณีที่ 1 เจอตัวเลข หรือ ทดศนิยม
+        if (isdigit(word) || word == '.'){
+            tempNum += word; //เก็บพักไว้ในtempNumก่อน
+        }
+
+        // กรณีที่ 2: เจอเครื่องหมาย (+ - * /)
+        else if (word == '+' || word == '-' || word == '*' || word == '/') {
+            
+            // เอาตัวเลขที่พักไว้ ในtempNumแปลงเป็น double และเอาไปใส่ใน numbers[]
+            if (!tempNum.empty()) {
+                numbers[numCount] = stod(tempNum); // stod = String TO Double
+                numCount++;       // ขยับ ตำแหน่ง index ไปช่องถัดไป
+                tempNum = "";     // ทำให้tempNuว่างเพื่อเก็บข้อมูลชุดต่อไป
+            }
+
+            // เมื่อเก็บตัวเลขเสร็จแล้ว ก็นำเครื่องหมายไปเก็บไว้ในops[]
+            ops[opCount] = word;
+            opCount++; // ขยับ ตำแหน่ง index ไปช่องถัดไป
+        }
+        
+    }
+    // จบลูปแล้วถ้ายังมีตัวเลขค้างอยู่ ให้แปลงเป็น double และเอาไปเก็บไวใน numbers[]เหมือนเดิม
+    if (!tempNum.empty()) {
+                numbers[numCount] = stod(tempNum); // stod = String TO Double
+                numCount++;       // ขยับ ตำแหน่ง index ไปช่องถัดไป
+                tempNum = "";     // ทำให้tempNuว่างเพื่อเก็บข้อมูลชุดต่อไป
+            }
 }
-
-
 
 // --- ZONE 3: (เปลี่ยนเป็น Pointer) ---
 // หน้าที่: วนลูป Pointer เพื่อคำนวณ คูณ/หาร ก่อน แล้วค่อย บวก/ลบ
