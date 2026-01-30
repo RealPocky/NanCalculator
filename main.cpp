@@ -26,23 +26,9 @@ double divide(double num1, double num2) {
     return num1 / num2; // หาร
 }
 
-// --- ZONE 2: (เปลี่ยนเป็น Pointer) ---
-// หน้าที่: รับ input เข้ามา แล้วยัดตัวเลขใส่ numbers[] และเครื่องหมายใส่ ops[]
-// สิ่งที่เปลี่ยน: ต้องส่ง int& numCount มาด้วย เพื่อนับว่าตอนนี้มีกี่ตัวแล้ว
-void SeparateWords(string input, double* numbers, int& numCount, char* ops, int& opCount) {
-    string tempNum = ""; //พักตัวเลข
+void SeparateWords(string input, double* numbers, int& numCount, char* ops, int& opCount);
+double calculate(double* numbers, int numCount, char* ops, int opCount);
 
-}
-
-// --- ZONE 3: (เปลี่ยนเป็น Pointer) ---
-// หน้าที่: วนลูป Pointer เพื่อคำนวณ คูณ/หาร ก่อน แล้วค่อย บวก/ลบ
-// สิ่งที่เปลี่ยน: ต้องรับ numCount เข้ามาด้วย จะได้รู้ว่าลูปถึงไหน
-double calculate(double* numbers, int numCount, char* ops, int opCount) {
-    // ไกด์:
-    // เนื่องจาก Pointer ลบช่องว่างยาก (ไม่มี .erase แบบ vector)
-    // แนะนำให้คำนวณเสร็จ แล้วขยับตัวข้างหลังมาทับ หรือสร้าง array ชั่วคราวมาเก็บผลลัพธ์
-    return 0; 
-}
 
 // --- ZONE 4:(Main System) ---
 int main() {
@@ -77,4 +63,24 @@ int main() {
     delete[] ops;
 
     return 0;
+}
+
+// --- ZONE 2: (เปลี่ยนเป็น Pointer) ---
+// หน้าที่: รับ input เข้ามา แล้วยัดตัวเลขใส่ numbers[] และเครื่องหมายใส่ ops[]
+// สิ่งที่เปลี่ยน: ต้องส่ง int& numCount มาด้วย เพื่อนับว่าตอนนี้มีกี่ตัวแล้ว
+void SeparateWords(string input, double* numbers, int& numCount, char* ops, int& opCount) {
+    string tempNum = ""; //พักตัวเลข
+
+}
+
+
+
+// --- ZONE 3: (เปลี่ยนเป็น Pointer) ---
+// หน้าที่: วนลูป Pointer เพื่อคำนวณ คูณ/หาร ก่อน แล้วค่อย บวก/ลบ
+// สิ่งที่เปลี่ยน: ต้องรับ numCount เข้ามาด้วย จะได้รู้ว่าลูปถึงไหน
+double calculate(double* numbers, int numCount, char* ops, int opCount) {
+    // ไกด์:
+    // เนื่องจาก Pointer ลบช่องว่างยาก (ไม่มี .erase แบบ vector)
+    // แนะนำให้คำนวณเสร็จ แล้วขยับตัวข้างหลังมาทับ หรือสร้าง array ชั่วคราวมาเก็บผลลัพธ์
+    return 0; 
 }
