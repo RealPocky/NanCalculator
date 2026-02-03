@@ -1,57 +1,50 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include <cstdlib> // จำเป็นสำหรับการแปลง string เป็นตัวเลข
+#include <cstdlib>
 
 using namespace std;
 
-// --- ZONE 1: ทีม Ma 76543th ---
-double add(double num1, double num2)
-{
-    return num1 + num2; // บวก
+// --- Function Math  ---
+double add(double num1, double num2) { // บวก
+    return num1 + num2;
 }
 
-double subtract(double num1, double num2)
-{
-    return num1 - num2; // ลบ
+double subtract(double num1, double num2) { // ลบ
+    return num1 - num2;
 }
 
-double multiply(double num1, double num2)
-{
-    return num1 * num2; // คูณ
+double multiply(double num1, double num2) { // คูณ
+    return num1 * num2;
 }
 
-double divide(double num1, double num2)
-{
-    if (num2 == 0)
-    {
+double divide(double num1, double num2) {   // หาร
+    if (num2 == 0) {
         cout << "Error: Divide by zero!" << endl;
         return 0;
     }
-    return num1 / num2; // หาร
+    return num1 / num2;
 }
 
-double modulo(double num1, double num2){ 
-    return fmod(num1, num2);    //เปอร์เซน
-}
-
+// Function Prototypes
+// แยกคำ ระหว่างตัวเลข กับเครื่องหมาย
 void SeparateWords(string input, double *numbers, int &numCount, char *ops, int &opCount, bool *isPercent);
+
+// คำนวณ
 double calculate(double *numbers, int numCount, char *ops, int opCount, bool *isPercent);
 
-// --- ZONE 4:(Main System) ---
-int main()
-{
+// --- Main System ---
+int main() {
     string inputEquation;
 
-    // จองพื้นที่ Pointer
+    // 1. จองพื้นที่ Heap Memory (Pointer Array)
     double *numbers = new double[100];
     char *ops = new char[100];
+    bool *isPercent = new bool[100]; // จำว่าช่องไหนเป็น %
 
-    bool *isPercent = new bool[100]; // สร้าง Array มาจำช่องไหนเป็น%
-    // เคลียร์ค่าเริ่มต้นให้เป็น false ทั้งหมด
+    // เคลียร์ค่าเริ่มต้น
     for(int i=0; i<100; i++) isPercent[i] = false;
 
-    // ตัวแปรช่วยนับจำนวนรอบ
     int numCount = 0;
     int opCount = 0;
 
@@ -59,143 +52,122 @@ int main()
     cout << "   Pointer Calculator" << endl;
     cout << "===========================" << endl;
     cout << "Enter equation: ";
+    cin >> inputEquation;
 
-    cin >> inputEquation; // รับสมการจากผู้ใช้
-
-    // ส่ง Pointer และตัวนับจำนวน ไปแยกส่วนประกอบ
+    // 2. เรียกใช้ Parser (แยกคำ)
     SeparateWords(inputEquation, numbers, numCount, ops, opCount, isPercent);
 
-    // ส่ง Pointer และจำนวนรอบที่ได้ ไปคำนวณ
+    // 3. เรียกใช้ Calculator (คำนวณ)
     double result = calculate(numbers, numCount, ops, opCount, isPercent);
-    // แสดงผล
+
+    // 4. แสดงผล
     cout << "Result: " << result << endl;
 
-    // คืนพื้นที่หน่วยความจำ
+    // 5. คืนพื้นที่หน่วยความจำ (Clean up)
     delete[] numbers;
     delete[] ops;
-    delete[] isPercent;  // [เพิ่มใหม่] อย่าลืมคืนเมมโม
+    delete[] isPercent;
 
     return 0;
 }
 
-// --- ZONE 2: (เปลี่ยนเป็น Pointer) ---
-// หน้าที่: รับ input เข้ามา แล้วยัดตัวเลขใส่ numbers[] และเครื่องหมายใส่ ops[]
-// สิ่งที่เปลี่ยน: ต้องส่ง int& numCount มาด้วย เพื่อนับว่าตอนนี้มีกี่ตัวแล้ว
+// --- Parser (แยกคำและจัดการ %) ---
 void SeparateWords(string input, double* numbers, int& numCount, char* ops, int& opCount, bool* isPercent) {
-    string tempNum = ""; //พักตัวเลข
-    int i = 0;
-    for (i = 0; i < input.length(); i++) {
+    string tempNum = "";    //พักตัวเลข
+    
+    for (int i = 0; i < input.length(); i++) {
         char word = input[i];
 
-        // กรณีที่ 1 เจอตัวเลข หรือ ทดศนิยม
-        if (isdigit(word) || word == '.'){
-            tempNum += word; //เก็บพักไว้ในtempNumก่อน
+        // กรณีเจอตัวเลขหรือจุดทศนิยม
+        if (isdigit(word) || word == '.') {
+            tempNum += word;    //เก็บพักไว้ในtempNumก่อน
         }
-       // [เพิ่มใหม่] ถ้าเจอ %
+        // กรณีเจอเครื่องหมาย %
         else if (word == '%') {
              if (!tempNum.empty()) {
-                double val = stod(tempNum); 
-                val = val / 100.0;          // หาร 100 ให้เป็นทศนิยม (เช่น 50 -> 0.5)
+                double val = stod(tempNum);  // stod = String TO Double
+                val = val / 100.0;          // แปลงเป็นทศนิยมก่อน
                 
-                numbers[numCount] = val;    // เก็บค่า 0.5
-                isPercent[numCount] = true; // [สำคัญ] ติ๊กถูกว่าช่องนี้มาจาก % นะ
+                numbers[numCount] = val;
+                isPercent[numCount] = true; // Mark ว่าตัวนี้มาจาก %
                 
-                numCount++;
-                tempNum = ""; // เคลียร์ตัวเลข
+                numCount++;     // ขยับ ตำแหน่ง index ไปช่องถัดไป
+                tempNum = "";   // ทำให้tempNuว่างเพื่อเก็บข้อมูลชุดต่อไป
              }
-             // หมายเหตุ: ไม่เก็บ % ลงใน ops[] เพราะเราแปลงค่าตัวเลขไปแล้ว
         }
-
-        // กรณีที่ 2: เจอเครื่องหมาย (+ - * /)
+        // กรณีเจอเครื่องหมายคำนวณ (+ - * /)
         else if (word == '+' || word == '-' || word == '*' || word == '/') { 
             if (!tempNum.empty()) {
-                numbers[numCount] = stod(tempNum);
-                // ช่องนี้ไม่ใช่ % (เพราะไม่เจอ % ก่อนหน้า)
-                isPercent[numCount] = false; 
-                numCount++;       
-                tempNum = "";    
+                numbers[numCount] = stod(tempNum); // stod = String TO Double
+                isPercent[numCount] = false; // ตัวเลขปกติ ไม่ใช่ %
+                numCount++;       // ขยับ ตำแหน่ง index ไปช่องถัดไป
+                tempNum = "";     // ทำให้tempNuว่างเพื่อเก็บข้อมูลชุดต่อไป
             }
-            ops[opCount] = word;
-            opCount++; 
+            ops[opCount] = word;    // เมื่อเก็บตัวเลขเสร็จแล้ว ก็นำเครื่องหมายไปเก็บไว้ในops[]
+            opCount++;              // ขยับ ตำแหน่ง index ไปช่องถัดไป
         }
     }
 
-    // จบลูปแล้วถ้ายังมีตัวเลขค้างอยู่ ให้แปลงเป็น double และเอาไปเก็บไวใน numbers[]เหมือนเดิม
+    // เก็บตกตัวเลขชุดสุดท้าย
     if (!tempNum.empty()) {
         numbers[numCount] = stod(tempNum); 
-        isPercent[numCount] = false; // ตัวสุดท้ายถ้าไม่มี % ต่อท้าย ก็เป็น false
+        isPercent[numCount] = false;
         numCount++;       
-        tempNum = "";    
     }
 }
 
-// --- ZONE 3: (เปลี่ยนเป็น Pointer) ---
-// หน้าที่: วนลูป Pointer เพื่อคำนวณ คูณ/หาร ก่อน แล้วค่อย บวก/ลบ
-// สิ่งที่เปลี่ยน: ต้องรับ numCount เข้ามาด้วย จะได้รู้ว่าลูปถึงไหน
+// --- Calculator (คำนวณตามลำดับความสำคัญ) ---
 double calculate(double *numbers, int numCount, char *ops, int opCount, bool *isPercent) {
-    double currentResult;
-    for (int i = 0; i < opCount; i++)
-    {
-        if (ops[i] == '*' || ops[i] == '/')
-        {
-            double currentResult = 0;
-            if (ops[i] == '*')
-            {
-                currentResult = multiply(numbers[i], numbers[i + 1]);
+    
+    // รอบที่ 1: เคลียร์ คูณ (*) และ หาร (/) ก่อน
+    for (int i = 0; i < opCount; i++) {
+        if (ops[i] == '*' || ops[i] == '/') {
+            double res = 0;
+            if (ops[i] == '*') {
+                res = multiply(numbers[i], numbers[i + 1]);
+            } else {
+                res = divide(numbers[i], numbers[i + 1]);
             }
-            else 
-                currentResult = divide(numbers[i], numbers[i + 1]);
-           
-            //เก็บผลลัพธ์ไว้ที่ช่องตัวหน้า (numbers[i])
-            numbers[i] = currentResult;
-            // ผลลัพธ์ใหม่ ไม่ถือว่าเป็น percent แล้ว
-            isPercent[i] = false;
 
-            //"ขยับกระดาน" (Shift Array) เพื่อลบตัวที่ใช้แล้วทิ้งไป
-            // ขยับตัวเลข: ดึงตัวข้างหลังมาทับตัวข้างหน้า (เริ่มที่ i+1)
-            // Shift Array numbers และ isPercent
-            for (int k = i + 1; k < numCount - 1; k++)
-            {
+            // เก็บผลลัพธ์
+            numbers[i] = res;
+            isPercent[i] = false; // ผลคูณหารแล้ว ไม่ถือเป็น % เดิมแล้ว
+
+            // Shift Array (ขยับกระดาน)
+            // ขยับตัวเลขและสถานะ %
+            for (int k = i + 1; k < numCount - 1; k++) {
                 numbers[k] = numbers[k + 1];
-                isPercent[k] = isPercent[k + 1]; // ขยับสถานะ % ตามมาด้วย
+                isPercent[k] = isPercent[k + 1]; 
             }
-            // ขยับเครื่องหมาย: ดึงตัวข้างหลังมาทับตัวข้างหน้า
-            for (int k = i; k < opCount - 1; k++)
-            {
+            // ขยับเครื่องหมาย
+            for (int k = i; k < opCount - 1; k++) {
                 ops[k] = ops[k + 1];
             }
 
-            //อัปเดตจำนวนตัวเลขและเครื่องหมายที่เหลือ
             numCount--;
             opCount--;
-
-             // เพราะเครื่องหมายตัวต่อไปมันขยับมาแทนที่ตำแหน่งปัจจุบันแล้ว ต้องเช็คซ้ำ
-            i--;
+            i--; // ถอย index เพื่อเช็คตำแหน่งเดิมซ้ำ
         }
     }
 
-    //บวก (+) กับ ลบ (-) ทำจากซ้ายไปขวาได้เลย
-    // สูตร: ถ้าตัวหลังเป็น % ให้เอา (ตัวหน้า * ตัวหลัง) ก่อน แล้วค่อย บวก/ลบ
+    // รอบที่ 2: บวก (+) และ ลบ (-) พร้อม Logic ของ Percent
     double finalResult = numbers[0];
-    for (int i = 0; i < opCount; i++)
-    {
-        // ให้แปลงจาก 0.5 เป็น (finalResult * 0.5)
-        // เช่น 100 - 0.5(%) -> 100 - (100*0.5) -> 100 - 50
-        if (isPercent[i + 1] == true){
-            numbers[i + 1] = finalResult * numbers[i + 1];
+    
+    for (int i = 0; i < opCount; i++) {
+        double nextValue = numbers[i + 1];
+
+        // Logic Percent: ถ้าเป็นการบวกลบ แล้วตัวหลังเป็น % ให้คิดเทียบจากตัวหน้า
+        // เช่น 100 - 10% คือ 100 - (100 * 0.1)
+        if (isPercent[i + 1] == true) {
+            nextValue = finalResult * nextValue;
         }
 
         if (ops[i] == '+') {
-            finalResult = add(finalResult, numbers[i + 1]);
-        } 
-        else if (ops[i] == '-') {
-            finalResult = subtract(finalResult, numbers[i + 1]);
+            finalResult = add(finalResult, nextValue);
+        } else if (ops[i] == '-') {
+            finalResult = subtract(finalResult, nextValue);
         }
     }
-        return finalResult;
 
-    // ไกด์:
-    // เนื่องจาก Pointer ลบช่องว่างยาก (ไม่มี .erase แบบ vector)
-    // แนะนำให้คำนวณเสร็จ แล้วขยับตัวข้างหลังมาทับ หรือสร้าง array ชั่วคราวมาเก็บผลลัพธ์
-    return 0;
+    return finalResult;     // คืนค่าไปยัง main เพื่อแสดงผล
 }
