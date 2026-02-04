@@ -49,7 +49,7 @@ int main() {
     int opCount = 0;
 
     cout << "===========================" << endl;
-    cout << "   Pointer Calculator" << endl; //Test Green feature
+    cout << "   Pointer Calculator" << endl;
     cout << "===========================" << endl;
     cout << "Enter equation: ";
     cin >> inputEquation;
@@ -147,6 +147,32 @@ double calculate(double *numbers, int numCount, char *ops, int opCount, bool *is
             numCount--;
             opCount--;
             i--; // ถอย index เพื่อเช็คตำแหน่งเดิมซ้ำ
+
+            /*
+            
+            sadk;asmd;asdwadfawd
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            */
         }
     }
 
