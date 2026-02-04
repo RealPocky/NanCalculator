@@ -49,7 +49,7 @@ int main() {
     int opCount = 0;
 
     cout << "===========================" << endl;
-    cout << "   Pointer Calculator" << endl;
+    cout << "   Pointer Calculator" << endl; //Test Green feature
     cout << "===========================" << endl;
     cout << "Enter equation: ";
     cin >> inputEquation;
