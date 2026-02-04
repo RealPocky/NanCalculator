@@ -153,7 +153,7 @@ double calculate(double *numbers, int numCount, char *ops, int opCount, bool *is
             sadk;asmd;asdwadfawd
             
             
-            Help me pls
+            Hello word5145345
             
             
             
